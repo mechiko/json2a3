@@ -1,0 +1,29 @@
+{
+    // Используйте IntelliSense, чтобы узнать о возможных атрибутах.
+    // Наведите указатель мыши, чтобы просмотреть описания существующих атрибутов.
+    // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Launch gui64",
+        "type": "go",
+        "request": "launch",
+        "mode": "debug",
+        "program": "${workspaceFolder}/cmd",
+        "env": {
+          "GOOS": "windows",
+          "GOARCH": "amd64",
+          "CGO_ENABLED": "1",
+        },
+        "args": [
+          "-db", "4ce20b68-316f-4bca-84db-970b27007d2f.db",
+          "-file", "20250919155911 Заказ КМ 318.json",
+          "-order", "318",
+          "-serial", "7",
+          "-gtin", "04630277410026"
+        ],
+        "buildFlags": ""
+        }
+    ]
+  }
+  
