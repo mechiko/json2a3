@@ -59,12 +59,22 @@ func main() {
 		errMessageExit(loger, title, err)
 	}
 	// создаем приложение с опциями из конфига и логером основным
-	app := app.New(cfg, loger, dir)
-	app.SetOptions("file", *file)
-	app.SetOptions("db", *dbA3)
-	app.SetOptions("order", *order)
-	app.SetOptions("serial", *serial)
-	app.SetOptions("gtin", *gtin)
+	app := app.New(cfg, loger, ".")
+	if err := app.SetOptions("file", *file); err != nil {
+		errProcessExit("ошибка установки опции file", err)
+	}
+	if err := app.SetOptions("db", *dbA3); err != nil {
+		errProcessExit("ошибка установки опции db", err)
+	}
+	if err := app.SetOptions("order", *order); err != nil {
+		errProcessExit("ошибка установки опции order", err)
+	}
+	if err := app.SetOptions("serial", *serial); err != nil {
+		errProcessExit("ошибка установки опции serial", err)
+	}
+	if err := app.SetOptions("gtin", *gtin); err != nil {
+		errProcessExit("ошибка установки опции gtin", err)
+	}
 	// убираем log upper slow query
 	db.LC().SetLevel(db.LogLevelError)
 	src, err := openDbSrc(app)

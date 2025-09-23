@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"path/filepath"
 
 	"json2a3/config"
 	"json2a3/domain"
@@ -23,7 +24,7 @@ type app struct {
 	uuid          string // идентификатор для уникальности формы
 	config        *config.Config
 	options       *config.Configuration // копия config.Configuration
-	loger         *zap.SugaredLogger
+	logger        *zap.SugaredLogger
 	pwd           string
 	startTime     time.Time
 	endTime       time.Time
@@ -37,12 +38,21 @@ var _ domain.Apper = (*app)(nil)
 // const modError = "app"
 
 func New(cfg *config.Config, logger *zap.SugaredLogger, pwd string) *app {
-	newApp := &app{}
-	newApp.pwd = pwd
-	newApp.loger = logger
-	newApp.config = cfg
-	newApp.options = cfg.Configuration()
-	newApp.uuid = uuid.New().String()
+	if cfg == nil {
+		panic("app.New: cfg is nil")
+	}
+	pwd, err := filepath.Abs(pwd)
+	if err != nil {
+		panic("app.New: pwd error " + err.Error())
+	}
+	newApp := &app{
+		ctx:     context.Background(),
+		pwd:     pwd,
+		logger:  logger,
+		config:  cfg,
+		options: cfg.Configuration(),
+		uuid:    uuid.New().String(),
+	}
 	return newApp
 }
 
@@ -55,7 +65,7 @@ func (a *app) Config() *config.Config {
 }
 
 func (a *app) Logger() *zap.SugaredLogger {
-	return a.loger
+	return a.logger
 }
 
 // выдаем адрес структуры опций программы чтобы править по месту
@@ -67,7 +77,9 @@ func (a *app) Options() *config.Configuration {
 // и Options
 // изменения не записываются в файл конфигурации
 func (a *app) SetOptions(key string, value any) error {
-	a.config.SetInConfig(key, value)
+	if err := a.config.SetInConfig(key, value); err != nil {
+		return err
+	}
 	a.options = a.config.Configuration()
 	return nil
 }

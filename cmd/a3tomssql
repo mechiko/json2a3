@@ -1,0 +1,4 @@
+2025-09-23 11:14:03	DEBUG	cmd/main.go:52	zaplog started
+2025-09-23 11:14:03	INFO	cmd/main.go:53	mode = development
+2025-09-23 11:14:03	INFO	cmd/main.go:55	pkg:config warning config file ('config.toml') not found
+
