@@ -32,9 +32,14 @@ func InsertBatchTx(app domain.Apper, dbs db.Session, jsonData *Codes, serialInit
 func moveBatch(app domain.Apper, dst db.Session, jsonData *Codes, serialInit int64) (int64, error) {
 	batchSize := 10
 	batch := dst.SQL().InsertInto("order_mark_codes_serial_numbers").Columns("id_order_mark_codes", "gtin", "serial_number", "code", "block_id", "status").Batch(batchSize)
-	// i := 1
+
 	var inserted int64
 	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				app.Logger().Errorf("panic in batch goroutine: %v", r)
+			}
+		}()
 		defer batch.Done()
 		order := app.Options().Order
 		max := app.Options().Serial
@@ -93,6 +98,7 @@ func findSerialMax(app domain.Apper, dst db.Session, order string) (int64, error
 	if serial, ok := valSerial["max(serial_number)"].(int64); ok {
 		return serial, nil
 	}
-	app.Logger().Infof("type max id %T", valSerial["max(serial_number)"])
-	return 0, nil
+	// app.Logger().Infof("type max id %T", valSerial["max(serial_number)"])
+	// return 0, nil
+	return 0, fmt.Errorf("unexpected type for max(serial_number): %T", valSerial["max(serial_number)"])
 }

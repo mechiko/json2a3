@@ -83,13 +83,6 @@ func main() {
 	}
 	defer src.Close()
 
-	serial, err := findSerialMax(app, src, *order)
-	if err != nil {
-		errProcessExit("ошибка открытия JSON", err)
-	}
-	serial += 1
-	loger.Infof("serial next:%d", serial)
-
 	jsonBytes, err := os.ReadFile(*file)
 	if err != nil {
 		errProcessExit("ошибка открытия JSON", err)
@@ -100,8 +93,18 @@ func main() {
 	if err != nil {
 		errProcessExit("ошибка JSON", err)
 	}
-
-	count, err := InsertBatchTx(app, src, &Codes, 1)
+	serial := int64(1)
+	if *max {
+		serial, err = findSerialMax(app, src, *order)
+		if err != nil {
+			errProcessExit("ошибка поиска максимального серийного номера", err)
+		}
+		serial += 1
+	}
+	loger.Infof("serial next:%d", serial)
+	// TODO
+	count, err := InsertBatchTx(app, src, &Codes, serial)
+	// count, err := InsertBatchTx(app, src, &Codes, 1)
 	if err != nil {
 		errProcessExit("ошибка вставки кодов в БД", err)
 	}

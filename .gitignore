@@ -147,3 +147,4 @@ cmd/*.json
 coverage*.out
 *.coverprofile
 
+cmd/a3tomssql

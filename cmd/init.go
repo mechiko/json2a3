@@ -13,6 +13,7 @@ var dbA3 = flag.String("db", "", "db")
 var order = flag.String("order", "", "order number")
 var serial = flag.Int("serial", 7, "lenght serial TG")
 var gtin = flag.String("gtin", "", "gtin")
+var max = flag.Bool("max", false, "find max serial")
 
 func errMessageExit(loger *zap.SugaredLogger, title string, err error) {
 	if loger != nil {
