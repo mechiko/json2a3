@@ -83,16 +83,25 @@ func main() {
 	}
 	defer src.Close()
 
+	serial, err := findSerialMax(app, src, *order)
+	if err != nil {
+		errProcessExit("ошибка открытия JSON", err)
+	}
+	serial += 1
+	loger.Infof("serial next:%d", serial)
+
 	jsonBytes, err := os.ReadFile(*file)
 	if err != nil {
 		errProcessExit("ошибка открытия JSON", err)
 	}
+
 	var Codes Codes
 	err = json.Unmarshal(jsonBytes, &Codes)
 	if err != nil {
 		errProcessExit("ошибка JSON", err)
 	}
-	count, err := InsertBatchTx(app, src, &Codes)
+
+	count, err := InsertBatchTx(app, src, &Codes, 1)
 	if err != nil {
 		errProcessExit("ошибка вставки кодов в БД", err)
 	}
