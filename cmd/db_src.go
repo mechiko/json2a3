@@ -38,6 +38,7 @@ func moveBatch(app domain.Apper, dst db.Session, jsonData *Codes, serialInit int
 		defer func() {
 			if r := recover(); r != nil {
 				app.Logger().Errorf("panic in batch goroutine: %v", r)
+				panic(r)
 			}
 		}()
 		defer batch.Done()
