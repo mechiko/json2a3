@@ -1,0 +1,18 @@
+package domain
+
+import (
+	"json2a3/config"
+
+	"go.uber.org/zap"
+)
+
+type Apper interface {
+	Options() *config.Configuration
+	SetOptions(key string, value interface{}) error
+	SaveOptions() error
+	Logger() *zap.SugaredLogger
+	ConfigPath() string
+	DefaultDbPath() string
+	LogPath() string
+	Pwd() string
+}
